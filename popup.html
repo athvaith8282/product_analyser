@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Analyzer Pro</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
+                    <path d="M19 15L19.5 18L22 18.5L19.5 19L19 22L18.5 19L16 18.5L18.5 18L19 15Z" fill="currentColor"/>
+                </svg>
+                <h1>Product Analyzer Pro</h1>
+            </div>
+        </header>
+
+        <main class="main">
+            <!-- API Key Setup Section -->
+            <div id="setup-section" class="section">
+                <div class="section-header">
+                    <h2>Setup</h2>
+                    <p>Enter your Google Gemini API key to get started</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="api-key">Gemini API Key</label>
+                    <div class="input-container">
+                        <input type="password" id="api-key" placeholder="Enter your Gemini API key">
+                        <button type="button" id="toggle-visibility" class="toggle-btn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Langfuse Configuration Section -->
+                <div class="langfuse-section">
+                    <div class="section-header">
+                        <h3>Langfuse Tracking (Optional)</h3>
+                        <p>Configure Langfuse for LLM response tracking</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="langfuse-public-key">Public Key (Username)</label>
+                        <div class="input-container">
+                            <input type="password" id="langfuse-public-key" placeholder="Enter your Langfuse public key">
+                            <button type="button" id="toggle-langfuse-public" class="toggle-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="langfuse-secret-key">Secret Key (Password)</label>
+                        <div class="input-container">
+                            <input type="password" id="langfuse-secret-key" placeholder="Enter your Langfuse secret key">
+                            <button type="button" id="toggle-langfuse-secret" class="toggle-btn">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M1 12S5 4 12 4S23 12 23 12S19 20 12 20S1 12 1 12Z" stroke="currentColor" stroke-width="2"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="langfuse-host">Host URL</label>
+                        <input type="url" id="langfuse-host" placeholder="https://cloud.langfuse.com or your self-hosted URL">
+                    </div>
+                </div>
+
+                <button id="save-api-key" class="btn btn-primary">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 21H5C3.89543 21 3 20.1046 3 19V5C3 3.89543 3.89543 3 5 3H16L21 8V19C21 20.1046 20.1046 21 19 21Z" stroke="currentColor" stroke-width="2"/>
+                        <path d="M17 21V13H7V21" stroke="currentColor" stroke-width="2"/>
+                        <path d="M7 3V8H15" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    Save Configuration
+                </button>
+            </div>
+
+            <!-- Analysis Section -->
+            <div id="analysis-section" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2>Product Analysis</h2>
+                    <p>Click to analyze the current product page</p>
+                </div>
+
+                <button id="analyze-product" class="btn btn-primary btn-large">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    Analyze This Product
+                </button>
+            </div>
+
+            <!-- Loading Section -->
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analyzing product details...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results-section" class="section" style="display: none;">
+                <div class="section-header">
+                    <h2>Analysis Results</h2>
+                    <button id="new-analysis" class="btn btn-secondary btn-small">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1 4V10H7" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3.51 15C4.39 20.39 9.11 24 15 24C21.63 24 27 18.63 27 12C27 5.37 21.63 0 15 0C9.11 0 4.39 3.61 3.51 9" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        New Analysis
+                    </button>
+                </div>
+
+                <div id="results-content" class="results-content">
+                    <!-- Results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div id="error-section" class="section error" style="display: none;">
+                <div class="error-content">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <path d="M15 9L9 15" stroke="currentColor" stroke-width="2"/>
+                        <path d="M9 9L15 15" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <h3>Error</h3>
+                    <p id="error-message">Something went wrong. Please try again.</p>
+                    <button id="retry-btn" class="btn btn-secondary">Retry</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Powered by Google Gemini AI</p>
+            <p id="langfuse-status" style="display: none; color: #059669; font-size: 11px; margin-top: 4px;">
+                📊 Langfuse tracking enabled
+            </p>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
